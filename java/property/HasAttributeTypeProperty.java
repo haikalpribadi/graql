@@ -19,9 +19,12 @@
 package graql.lang.property;
 
 import graql.lang.Graql;
+import graql.lang.exception.GraqlException;
 import graql.lang.statement.Statement;
 import graql.lang.statement.StatementType;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -38,10 +41,28 @@ public class HasAttributeTypeProperty extends VarProperty {
 
     private final Statement attributeType;
     private final boolean isKey;
+    private Object defaultV;
 
-    public HasAttributeTypeProperty(Statement attributeType, boolean isKey) {
+    public HasAttributeTypeProperty(Statement attributeType) {
+        this(attributeType, false);
+    }
+
+    public HasAttributeTypeProperty(Statement attributeType, boolean isKey, Graql.Argument<?>... args) {
         this.attributeType = attributeType;
         this.isKey = isKey;
+
+        Set<Graql.Token.Param> argKeys = new HashSet<>();
+        for (Graql.Argument<?> arg : args) {
+            if (argKeys.contains(arg.type())) {
+                throw GraqlException.create("HasAttributeTypeProperty only accepts unique Graql.Argument(s)");
+            } else {
+                argKeys.add(arg.type());
+            }
+
+            if (arg.type().equals(Graql.Token.Param.DEFAULT)) {
+                this.defaultV = arg.value();
+            }
+        }
     }
 
     public Statement attributeType() {
@@ -50,6 +71,10 @@ public class HasAttributeTypeProperty extends VarProperty {
 
     public boolean isKey() {
         return isKey;
+    }
+
+    public Object defaultV(){
+        return defaultV;
     }
 
     @Override

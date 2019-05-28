@@ -101,15 +101,18 @@ statement_type      :   type        type_property ( ',' type_property )* ';' ;
 type_property       :   ABSTRACT
                     |   SUB_        type
                     |   KEY         type
-                    |   HAS         type
+                    |   HAS         type    type_args?
                     |   PLAYS       type
-                    |   RELATES     type ( AS type )?
+                    |   RELATES     type  ( AS type )?
                     |   DATATYPE    datatype
                     |   REGEX       regex
                     |   WHEN    '{' pattern+              '}'
                     |   THEN    '{' statement_instance+   '}'                   // TODO: remove '+'
                     |   TYPE        type_label
                     ;
+type_args           :   type_arg | type_args_array      ;
+type_args_array     :   '[' type_arg (',' type_arg)* ']';
+type_arg            :   DEFAULT '=' literal             ;
 
 // INSTANCE STATEMENTS =========================================================
 
@@ -265,6 +268,10 @@ PLAYS           : 'plays'       ;   RELATES         : 'relates'     ;
 DATATYPE        : 'datatype'    ;   REGEX           : 'regex'       ;
 WHEN            : 'when'        ;   THEN            : 'then'        ;
 
+// STATEMENT PROPERTY ARGUMENT PARAMETER KEYWORDS
+
+DEFAULT         : 'default'     ;
+
 // GROUP AND AGGREGATE QUERY KEYWORDS (also used by COMPUTE QUERY)
 
 GROUP           : 'group'       ;   COUNT           : 'count'       ;
@@ -280,6 +287,9 @@ K_CORE          : 'k-core'      ;   CONNECTED_COMPONENT : 'connected-component';
 FROM            : 'from'        ;   TO              : 'to'          ;
 OF              : 'of'          ;   IN              : 'in'          ;
 USING           : 'using'       ;   WHERE           : 'where'       ;
+
+// COMPUTE QUERY ARGUMENT PARAMETER KEYWORDS
+
 MIN_K           : 'min-k'       ;   K               : 'k'           ;
 SIZE            : 'size'        ;   CONTAINS        : 'contains'    ;
 

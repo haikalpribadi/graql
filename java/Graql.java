@@ -512,6 +512,50 @@ public class Graql {
         return hiddenVar().like(value);
     }
 
+    @CheckReturnValue
+    public static Graql.Argument<Long> defaultV(long value) {
+        return new Graql.Argument<>(Token.Param.DEFAULT, value);
+    }
+
+    @CheckReturnValue
+    public static Graql.Argument<Double> defaultV(double value) {
+        return new Graql.Argument<>(Token.Param.DEFAULT, value);
+    }
+
+    @CheckReturnValue
+    public static Graql.Argument<Boolean> defaultV(boolean value) {
+        return new Graql.Argument<>(Token.Param.DEFAULT, value);
+    }
+
+    @CheckReturnValue
+    public static Graql.Argument<String> defaultV(String value) {
+        return new Graql.Argument<>(Token.Param.DEFAULT, value);
+    }
+
+    @CheckReturnValue
+    public static Graql.Argument<LocalDateTime> defaultV(LocalDateTime value) {
+        return new Graql.Argument<>(Token.Param.DEFAULT, value);
+    }
+
+    public static class Argument<T> {
+
+        private Graql.Token.Param param;
+        private T value;
+
+        private Argument(Graql.Token.Param param, T value) {
+            this.param = param;
+            this.value = value;
+        }
+
+        public final Graql.Token.Param type() {
+            return this.param;
+        }
+
+        public final T value() {
+            return this.value;
+        }
+    }
+
     public static class Token {
 
         public enum Type {
@@ -543,9 +587,6 @@ public class Graql {
             }
         }
 
-        /**
-         * Graql commands to determine the type of query
-         */
         public enum Command {
             COMPUTE("compute"),
             MATCH("match"),
@@ -555,9 +596,7 @@ public class Graql {
             DELETE("delete"),
             GET("get"),
             AGGREGATE("aggregate"),
-            GROUP("group"),
-            OFFSET("offset"),
-            LIMIT("limit");
+            GROUP("group");
 
             private final String command;
 
@@ -573,6 +612,30 @@ public class Graql {
             public static Command of(String value) {
                 for (Command c : Command.values()) {
                     if (c.command.equals(value)) {
+                        return c;
+                    }
+                }
+                return null;
+            }
+        }
+
+        public enum Param {
+            DEFAULT("default");
+
+            private final String param;
+
+            Param(String param) {
+                this.param = param;
+            }
+
+            @Override
+            public String toString() {
+                return this.param;
+            }
+
+            public static Param of(String value) {
+                for (Param c : Param.values()) {
+                    if (c.param.equals(value)) {
                         return c;
                     }
                 }
@@ -606,9 +669,6 @@ public class Graql {
             }
         }
 
-        /**
-         * Characters available for use in the Graql syntax
-         */
         public enum Char {
             EQUAL("="),
             COLON(":"),

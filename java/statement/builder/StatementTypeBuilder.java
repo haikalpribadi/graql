@@ -138,7 +138,7 @@ public interface StatementTypeBuilder {
      * @return this
      */
     @CheckReturnValue
-    default StatementType has(String type) {
+    default StatementType has(String type, Graql.Argument<?>... args) {
         return has(Graql.type(type));
     }
 
@@ -148,7 +148,7 @@ public interface StatementTypeBuilder {
      */
     @CheckReturnValue
     default StatementType has(Statement type) {
-        return type(new HasAttributeTypeProperty(type, false));
+        return type(new HasAttributeTypeProperty(type));
     }
 
     /**
